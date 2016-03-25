@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Queries>
+	<Usuarios>
+		
+		<getAllUser lang="SQl" database="financial">
+			<select></select>
+			<from>from Usuarios as model</from>
+			<where condition="where"> 
+				<userName condition="and">userName = :userName</userName>
+				<password condition="and">password = :password</password>
+				<names condition="and">names = :names</names>
+				<lastName condition="and">lastName = :lastName</lastName> 
+			</where>
+			<groupBy></groupBy>
+			<orderBy></orderBy>
+			<having>				
+			</having>
+		</getAllUser>
+		
+	</Usuarios>
+</Queries>
