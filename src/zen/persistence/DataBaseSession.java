@@ -23,12 +23,14 @@ public class DataBaseSession implements IDataBasesSession {
 	
 	public DataBaseSession(){
 		this.closeSession = true;
-		
-		// Me permite conectarme a la base de datos definidas 
 		this.session = HibernateSession.getSession();
-		
 	}
 	
+	private void openSession(){
+		if(!this.session.isConnected()){
+			this.session = HibernateSession.getSession();
+		}
+	}
 	
 	
 	@Override
@@ -37,6 +39,7 @@ public class DataBaseSession implements IDataBasesSession {
         Object object = null;
         try {
         	
+        	openSession();
         	session.beginTransaction();
         	object = session.save(entity);
         	
@@ -69,6 +72,7 @@ public class DataBaseSession implements IDataBasesSession {
 		Object object = null;
         try {
         	
+        	openSession();
         	session.beginTransaction();
         	object = session.merge(entity);
         	
@@ -102,7 +106,7 @@ public class DataBaseSession implements IDataBasesSession {
 		Object object = null;
         try {
         	
-        	
+        	openSession();
         	persistence = (Serializable) findById(entidad, id);
         	entity      = QueryManager.getEntity(parameters, persistence);
         	
@@ -142,6 +146,7 @@ public class DataBaseSession implements IDataBasesSession {
 		
         try {
         	
+        	openSession();
         	session.beginTransaction();
         	session.saveOrUpdate(entity);
         	
@@ -169,6 +174,8 @@ public class DataBaseSession implements IDataBasesSession {
 	@Override
 	public void delete(Serializable entity) throws Exception {
 		try {
+			
+			openSession();
         	session.beginTransaction();
         	session.delete(entity);
         	
@@ -194,6 +201,7 @@ public class DataBaseSession implements IDataBasesSession {
 	public Object findById(Class entidad, Serializable id) throws Exception {
 		Object instance = null;
         try {
+        	openSession();
         	instance = (Object) session.get(entidad,  id);
         	return instance;
         } catch (RuntimeException re) {
@@ -220,6 +228,7 @@ public class DataBaseSession implements IDataBasesSession {
 		Map.Entry mapEnt=null;
 		List result = null;
 		try {
+			openSession();
 			
 			queryObject =	session.getNamedQuery(nameQuery);
 			if(top != null){
@@ -274,6 +283,8 @@ public class DataBaseSession implements IDataBasesSession {
 		List result = null;
 		String sql = null;
 		try {
+			
+			openSession();
 			
 			sql = QueryManager.getQuery(entityName, queryName, paramsWhere, paramsHaving);
 			queryObject = session.createSQLQuery(sql);
@@ -332,6 +343,8 @@ public class DataBaseSession implements IDataBasesSession {
 		String sql = null;
 		try {
 		
+			openSession();
+			
 			sql = QueryManager.getQuery(entityName, queryName, paramsWhere);
 			queryObject = session.createSQLQuery(sql);
 			
@@ -379,6 +392,8 @@ public class DataBaseSession implements IDataBasesSession {
 		List result = null;
 		String hql = null;
 		try {
+			
+			openSession();
 			
 			hql = QueryManager.getQuery(entityName, queryName, paramsWhere, paramsHaving);
 			queryObject = session.createQuery(hql);
@@ -440,6 +455,8 @@ public class DataBaseSession implements IDataBasesSession {
 		List result = null;
 		
 		try{	
+			
+			openSession();
 			
 			queryObject = session.getNamedQuery(nameProcedure);
 			

@@ -13,9 +13,8 @@ public interface IBLUser {
 	 * 	1. Requiere los campos obligatorios
 	 *  2. Verifica la seguridad de la clave
 	 *  3. Verifica la existencia de login
-	 *  4. Envia un email para activacion de la cuenta
 	 */
-	public JSONObject register(Usuarios user);
+	public JSONObject register(Usuarios user) throws Exception;
 	
 	/*
 	 * Activa la cuenta de usuario
