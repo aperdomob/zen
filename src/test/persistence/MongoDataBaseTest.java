@@ -4,16 +4,17 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import persistence.SessionDataBaseMongo;
-import persistence.SessionDatabase;
+import resources.Enums.DataBase;
 
 public class MongoDataBaseTest {
 	
-	private SessionDatabase sesionMongoDB;
+	private SessionDataBaseMongo sessionDataBaseMongo;
 	
 	@Test
-	public void getSession() throws Exception {
-		SessionDataBaseMongo mongodb = SessionDataBaseMongo.getSession(null, null, "test");
-		Assert.assertNotNull(mongodb.getDatabase());
+	public void successConnectClientMongoDB() throws Exception {
+		boolean expected = true;
+		sessionDataBaseMongo = SessionDataBaseMongo.getInstance(DataBase.AdoptPet);
+		Assert.assertSame(expected, sessionDataBaseMongo.isConnect());
 		
 	}
 }

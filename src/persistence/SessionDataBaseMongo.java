@@ -1,61 +1,54 @@
 package persistence;
 
-import java.util.HashMap;
-import java.util.Optional;
-
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
-import com.mongodb.client.MongoDatabase;
 
-public class SessionDataBaseMongo implements SessionDatabase {
-	
-	private String host;
-	
-	private Integer port;
-	
-	private String nameDatabase;
-	
-	private MongoDatabase database;
-	
-	private static HashMap<String, SessionDataBaseMongo> sessions = new HashMap<>();
-	
-	private final String HOST_LOCAL = "127.0.0.1";
-	
-	private final Integer PORT_DEFAULT = 27017;
+import resources.Enums.DataBase;
+import resources.Settings;
 
+public class SessionDataBaseMongo{
 	
-	private SessionDataBaseMongo(String host, Integer port, String nameDatabase){
-		this.host = host!=null ? host : HOST_LOCAL;
-		this.port = port!=null ? port : PORT_DEFAULT;
-		this.nameDatabase = nameDatabase;
-		this.database = connectToDatabase();
-		this.sessions.put(this.nameDatabase, this );
-		
+	private static SessionDataBaseMongo instance = new SessionDataBaseMongo();
+	private MongoClient mongoClient;
+	private Settings setting;
+	private final String keyPropertyDatase = "URI_DATABASE_INDEX_";
+	private boolean isConnect = false;
+	private DataBase indexDatabase;
+	
+	private SessionDataBaseMongo(){
+		setting = new Settings();
 	}
 	
-	public static SessionDataBaseMongo getSession(String host, Integer port, String nameDatabase){
-		SessionDataBaseMongo session = sessions.containsKey(nameDatabase) ? sessions.get(nameDatabase) 
-		 : new SessionDataBaseMongo(host, port, nameDatabase);
-		return session;
-	}
-	
-	
-	@SuppressWarnings("resource")
-	private MongoDatabase connectToDatabase(){
-		String uriDataBase = null;
-		MongoClient instanceDataBase  = null;
+	public static SessionDataBaseMongo getInstance(DataBase database) throws Exception{
 		try{
-			uriDataBase = String.format("mongodb://%s:%s", this.host, this.port);
-			instanceDataBase = new MongoClient(new MongoClientURI(uriDataBase));
-			return instanceDataBase.getDatabase(this.nameDatabase);
+			instance = instance.isConnect ? instance : new SessionDataBaseMongo().connectClient(database);
+			return instance;
 		}
 		catch(Exception e){
 			throw e;
 		}
-		
+	}
+	
+	private SessionDataBaseMongo connectClient(DataBase database) throws Exception{
+		String keyDatabase;
+		String uriDataBase = null;
+		try{
+			
+			indexDatabase = database;
+			keyDatabase = String.format("%s%s", keyPropertyDatase, indexDatabase.ordinal() );
+			uriDataBase = setting.getSettings().getProperty(keyDatabase);
+			mongoClient = new MongoClient(new MongoClientURI(uriDataBase));
+			isConnect = mongoClient.getAddress() != null;
+			
+			return this;
+		}
+		catch(Exception e){
+			isConnect = false;
+			throw e;
+		}
 	}
 
-	public MongoDatabase getDatabase() {
-		return database;
-	}
+	public boolean isConnect() {
+		return isConnect;
+	} 
 }
