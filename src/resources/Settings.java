@@ -13,6 +13,9 @@ public class Settings {
 	private static Properties settings;
 	private final String[] propertyFileName = new String[]{"settings"};
 	
+	private final String keyPropertyUri= "URI_DATABASE_INDEX_";
+	private final String keyPropertyDatabase= "DATABASE_NAME_";
+	
 	public Settings(){
 		
 	}
@@ -58,6 +61,14 @@ public class Settings {
 		Settings.settings =  Settings.settings == null ? 
 		 loadPropertiesFile(PropertiesFile.Settings) : Settings.settings;
 		return Settings.settings;
+	}
+
+	public String getKeyPropertyUri() {
+		return keyPropertyUri;
+	}
+
+	public String getKeyPropertyDatabase() {
+		return keyPropertyDatabase;
 	}
 	
 	
